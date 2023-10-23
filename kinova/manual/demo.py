@@ -196,6 +196,7 @@ def myCartesianMovement(base, base_cyclic, x, y, z):
 
     print("Executing action")
     base.ExecuteAction(action)
+    print(action.name)
 
     print("Waiting for movement to finish ...")
     finished = e.wait(TIMEOUT_DURATION)
