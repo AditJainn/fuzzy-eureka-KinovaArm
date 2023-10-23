@@ -175,7 +175,7 @@ def example_cartesian_action_movement(base, base_cyclic):
 def myCartesianMovement(base, base_cyclic, x, y, z):
     print("Starting Adit's action movement ...")
     action = Base_pb2.Action()
-    action.name = "Moving {x} & {y} & {z}"
+    action.name = f"Moving {x} & {y} & {z}"
     action.application_data = ""
 
     feedback = base_cyclic.RefreshFeedback()
