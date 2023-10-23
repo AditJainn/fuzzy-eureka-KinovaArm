@@ -200,7 +200,8 @@ def main():
         for i in range(10):
             print(get_gripper(base))
             time.sleep(0.2)
-#        success &= example_cartesian_action_movement(base, base_cyclic)
+        
+        success &= example_cartesian_action_movement(base, base_cyclic)
         # success &= example_angular_action_movement(base, [0,0,0,0,0,0])
         # success &= example_angular_action_movement(base, [154,0,0,0,0,0])
         # success &= example_angular_action_movement(base, [-154,0,0,0,0,0])
