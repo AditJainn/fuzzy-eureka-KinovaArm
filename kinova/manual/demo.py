@@ -137,7 +137,6 @@ def example_angular_action_movement(base, angles=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
 
 def example_cartesian_action_movement(base, base_cyclic):
-    
     print("Starting Cartesian action movement ...")
     action = Base_pb2.Action()
     action.name = "Example Cartesian action movement"
@@ -149,6 +148,42 @@ def example_cartesian_action_movement(base, base_cyclic):
     cartesian_pose.x = feedback.base.tool_pose_x          # (meters)
     cartesian_pose.y = feedback.base.tool_pose_y - 0.1    # (meters)
     cartesian_pose.z = feedback.base.tool_pose_z - 0.2    # (meters)
+    cartesian_pose.theta_x = feedback.base.tool_pose_theta_x # (degrees)
+    cartesian_pose.theta_y = feedback.base.tool_pose_theta_y # (degrees)
+    cartesian_pose.theta_z = feedback.base.tool_pose_theta_z # (degrees)
+
+    e = threading.Event()
+    notification_handle = base.OnNotificationActionTopic(
+        check_for_end_or_abort(e),
+        Base_pb2.NotificationOptions()
+    )
+
+    print("Executing action")
+    base.ExecuteAction(action)
+
+    print("Waiting for movement to finish ...")
+    finished = e.wait(TIMEOUT_DURATION)
+    base.Unsubscribe(notification_handle)
+
+    if finished:
+        print("Cartesian movement completed")
+    else:
+        print("Timeout on action notification wait")
+    return finished
+
+
+def myCartesianMovement(base, base_cyclic, x, y, z):
+    print("Starting Adit's action movement ...")
+    action = Base_pb2.Action()
+    action.name = "Moving {x} & {y} & {z}"
+    action.application_data = ""
+
+    feedback = base_cyclic.RefreshFeedback()
+
+    cartesian_pose = action.reach_pose.target_pose
+    cartesian_pose.x = feedback.base.tool_pose_x + x          # (meters)
+    cartesian_pose.y = feedback.base.tool_pose_y + y     # (meters)
+    cartesian_pose.z = feedback.base.tool_pose_z + z    # (meters)
     cartesian_pose.theta_x = feedback.base.tool_pose_theta_x # (degrees)
     cartesian_pose.theta_y = feedback.base.tool_pose_theta_y # (degrees)
     cartesian_pose.theta_z = feedback.base.tool_pose_theta_z # (degrees)
@@ -193,9 +228,10 @@ def main():
 
         success &= example_move_to_home_position(base)
         set_gripper(base, 1.0)
-        for i in range(10):
-            print(get_gripper(base))
-            time.sleep(0.2)
+        success &= example_angular_action_movement(base, [0,-45,45,90,90,0])
+        
+        # success &= myCartesianMovement(base,base_cyclic, 0.1)
+
         # set_gripper(base, 0)
         # for i in range(10):
         #     print(get_gripper(base))
@@ -221,13 +257,16 @@ def main():
         # success &= example_angular_action_movement(base, [0,0,0,0,0,45])
         # success &= example_angular_action_movement(base, [0,0,0,0,0,-45])
         # success &= example_angular_action_movement(base, [45,-45,0,0,0,0])
-        input("Press return to grab block")
-        set_gripper(base, 1.0)
-        time.sleep(2)
-        print(get_gripper(base))
-        success &= example_angular_action_movement(base, [0,-45,45,0,0,0])
-        set_gripper(base, 0.0)
-        time.sleep(2)
+       
+       
+        # success &= example_cartesian_action_movement(base, base_cyclic, [0.2,0.3,0])
+        # input("Press return to grab block")
+        # set_gripper(base, 1.0)
+        # time.sleep(2)
+        # print(get_gripper(base))
+        # success &= example_angular_action_movement(base, [0,-45,45,0,0,0])
+        # set_gripper(base, 0.0)
+        # time.sleep(2)
         success &= example_move_to_home_position(base)
 
         # You can also refer to the 110-Waypoints examples if you want to execute
