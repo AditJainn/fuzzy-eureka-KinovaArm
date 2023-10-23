@@ -170,23 +170,6 @@ def example_cartesian_action_movement(base, x, y, z, theta_x, theta_y, theta_z):
 
     return finished
 
-#
-#
-#
-#
-
-#
-#
-#
-#
-
-#
-#
-#
-#
-
-
-
 def get_tool_state(base_cyclic):
     feedback = base_cyclic.RefreshFeedback()
     base = feedback.base
