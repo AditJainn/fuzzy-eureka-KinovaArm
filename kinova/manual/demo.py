@@ -231,7 +231,7 @@ def main():
         set_gripper(base, 1.0)
         success &= example_angular_action_movement(base, [0,-45,45,90,90,0])
         
-        # success &= myCartesianMovement(base,base_cyclic, 0.1)
+        success &= myCartesianMovement(base,base_cyclic, 0.1)
 
         # set_gripper(base, 0)
         # for i in range(10):
